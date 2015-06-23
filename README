@@ -1,21 +1,28 @@
-== YubiKey NEO App: OpenPGP
+== SIGILANCE Fork of Java Card OpenPGP Applet
 
-[IMPORTANT]
-====
-Yubico has learned of a security issue with the OpenPGP Card applet project that is used in the YubiKey NEO. This vulnerability applies to you only if you are using OpenPGP, and you have the OpenPGP applet version 1.0.9 or earlier.
-link:https://developers.yubico.com/ykneo-openpgp/SecurityAdvisory%202015-04-14.html[SecurityAdvisory 2015-04-14]
-====
+This project implements the OpenPGP card functionality used on the
+SIGILANCE OpenPGP smart card that is sold by Panchromatic, LLC.
 
-This project implement the OpenPGP card functionality used on the
-YubiKey NEO device that is sold by Yubico.
-
-This project is based on the 
+This project is based on the
+https://github.com/Yubico/ykneo-openpgp[ykneo-openpgp applet],
+which is in turn based on the
 http://sourceforge.net/p/javacardopenpgp/[Java Card OpenPGP Card]
-project made by Joeri de Ruiter. 
-The initial modifications we have made compared to
-the upstream project are minor, but we reserve the right to make other
-changes and improvements that are specific to the YubiKey NEO
-hardware.
+project made by Joeri de Ruiter. Commits to this project come primarily
+from Joey Castillo, who maintains
+https://github.com/josecastillo/ykneo-openpgp[his own development repository here].
+It is mirrored here to provide a consistent permalink to the code that
+is shipped on SIGILANCE OpenPGP smart cards.
+
+While the modifications to the upstream project were once minor, the
+applet's codebase has matured significantly since that fork was made.
+In collaboration with the community, the Yubico fork has fixed a
+critical security vulnerability, incorporated bug fixes, and cut the
+applet's transient memory usage in half.
+
+The SIGILANCE fork of the Yubico project consists of feature
+enhancements — most significantly, support for private use data
+objects — as well as one minor change to set the ATR of the smart card,
+a formality that is not necessary on the Yubikey NEO hardware.
 
 === License
 
@@ -32,9 +39,18 @@ and doc/InstallCAPFile.txt on how to install it.
 
 === Usage
 
-The OpenPGP Card applet is typically used through http://www.gnupg.org[GnuPG]
-so we refer to its documentation for the full reference.
+Tutorials for setting up the NFC-enabled SIGILANCE OpenPGP smart card
+using OpenKeychain on Android are available at
+https://www.sigilance.com/documentation/[the SIGILANCE documentation page],
+including examples for
+https://www.sigilance.com/documentation/android-key-generation/[creating a new identity],
+https://www.sigilance.com/documentation/android-key-export/[copying an existing identity onto a smart card],
+and
+https://www.sigilance.com/documentation/android-adding-subkeys/[adding smart card-compatible keys to an existing identity].
 
-We have tutorials on specific topics in at
+The OpenPGP Card applet can also be used with http://www.gnupg.org[GnuPG],
+and you may refer to its documentation for a full reference
+
+Yubico also maintains tutorials on other applet-related topics at
 https://developers.yubico.com/PGP[developers.yubico.com/PGP], for example card
 editing and key import.
