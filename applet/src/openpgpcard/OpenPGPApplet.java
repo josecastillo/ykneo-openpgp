@@ -19,6 +19,8 @@
  */
 package openpgpcard;
 
+import org.globalplatform.GPSystem;
+
 import javacard.framework.*;
 import javacard.security.*;
 import javacardx.crypto.*;
@@ -43,9 +45,20 @@ public class OpenPGPApplet extends Applet implements ISO7816 {
 	
 	private static final boolean FORCE_SM_GET_CHALLENGE = true;
 
-	private static final byte[] HISTORICAL = { 0x00, 0x73, 0x00, 0x00,
-			(byte) 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-			0x00 };
+	private static final byte[] HISTORICAL = {
+			0x00,       // Category byte: compact TLV objects to follow
+			0x31,       // Tag 3: Card service data, length 1
+			(byte)0xC5, // Selection by full or partial DF name
+			0x73,       // Tag 7: Card capabilities; length 3
+			(byte)0xC0, // Selection by full or partial DF name
+			0x01,       // Data coding byte, not used by GPG. Official card returns 1.
+			(byte)0x80, // Command chaining supported
+			0x54,       // Tag 5: Issuer data; length 4, proprietary format.
+			0x76, 0x15, // SIGILANCE Manufacturer ID
+			0x02, 0x01, // Major revision 02, minor revision 01
+			0x05,       // LCS byte: TERMINATE DF and ACTIVATE FILE are supported.
+			(byte)0x90, 0x00  // Mandatory status bytes
+	};
 	
 	// returned by vendor specific command f1
 	private static final byte[] VERSION = { 0x01, 0x00, 0x11 };
@@ -372,7 +385,11 @@ public class OpenPGPApplet extends Applet implements ISO7816 {
 					terminated = false;
 					JCSystem.requestObjectDeletion();
 				} else {
-					ISOException.throwIt(ISO7816.SW_CONDITIONS_NOT_SATISFIED);
+					// ACTIVATE FILE is defined to be a no-op when card is not in termination state.
+					// In this case, we use it to set the ATR historical bytes, which we cannot do
+					// in the install method. This is called once after applet installation; once
+					// the card is shipped, additional calls have no further effect.
+					GPSystem.setATRHistBytes(HISTORICAL, (short)0, (byte)HISTORICAL.length);
 				}
 				break;
 				
